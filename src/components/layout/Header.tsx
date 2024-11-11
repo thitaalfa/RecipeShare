@@ -1,13 +1,20 @@
 import { Link } from 'react-router-dom';
 import { useTheme } from '@/components/theme-provider';
 import { Button } from '@/components/ui/button';
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import {
   NavigationMenu,
   NavigationMenuItem,
   NavigationMenuList,
 } from '@/components/ui/navigation-menu';
-import { Moon, Sun, UtensilsCrossed } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { Menu, Moon, Sun, UtensilsCrossed } from 'lucide-react';
+
+const navigationLinks = [
+  { href: '/', label: 'Home' },
+  { href: '/browse', label: 'Browse' },
+  { href: '/my-recipes', label: 'My Recipes' },
+  { href: '/profile', label: 'Profile' },
+];
 
 export function Header() {
   const { theme, setTheme } = useTheme();
@@ -21,30 +28,20 @@ export function Header() {
           <UtensilsCrossed className="h-6 w-6" />
           <span className="font-bold text-lg">RecipeShare</span>
         </Link>
-        <NavigationMenu>
+
+        {/* Desktop Navigation */}
+        <NavigationMenu className="hidden md:flex">
           <NavigationMenuList>
-            <NavigationMenuItem>
-              <Link to="/" className={navigationMenuTriggerStyle}>
-                Home
-              </Link>
-            </NavigationMenuItem>
-            <NavigationMenuItem>
-              <Link to="/browse" className={navigationMenuTriggerStyle}>
-                Browse
-              </Link>
-            </NavigationMenuItem>
-            <NavigationMenuItem>
-              <Link to="/my-recipes" className={navigationMenuTriggerStyle}>
-                My Recipes
-              </Link>
-            </NavigationMenuItem>
-            <NavigationMenuItem>
-              <Link to="/profile" className={navigationMenuTriggerStyle}>
-                Profile
-              </Link>
-            </NavigationMenuItem>
+            {navigationLinks.map((link) => (
+              <NavigationMenuItem key={link.href}>
+                <Link to={link.href} className={navigationMenuTriggerStyle}>
+                  {link.label}
+                </Link>
+              </NavigationMenuItem>
+            ))}
           </NavigationMenuList>
         </NavigationMenu>
+
         <div className="ml-auto flex items-center space-x-4">
           <Button
             variant="ghost"
@@ -58,6 +55,29 @@ export function Header() {
             )}
             <span className="sr-only">Toggle theme</span>
           </Button>
+
+          {/* Mobile Menu */}
+          <Sheet>
+            <SheetTrigger asChild className="md:hidden">
+              <Button variant="ghost" size="icon">
+                <Menu className="h-5 w-5" />
+                <span className="sr-only">Toggle menu</span>
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="right" className="w-[300px] sm:w-[400px]">
+              <nav className="flex flex-col space-y-4 mt-6">
+                {navigationLinks.map((link) => (
+                  <Link
+                    key={link.href}
+                    to={link.href}
+                    className="flex items-center space-x-2 text-sm font-medium transition-colors hover:text-primary"
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+              </nav>
+            </SheetContent>
+          </Sheet>
         </div>
       </div>
     </header>
